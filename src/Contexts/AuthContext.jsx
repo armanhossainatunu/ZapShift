@@ -1,5 +1,3 @@
-import { createContext } from "react-router";
+import { createContext } from "react";
 
-const AuthCOntext= createContext(null);
-
-export default AuthCOntext;
+export const AuthContext = createContext(null);
