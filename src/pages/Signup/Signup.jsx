@@ -3,18 +3,46 @@ import { useForm } from "react-hook-form";
 import useAuth from "../../Hooks/useAuth";
 import { toast } from "react-toastify";
 import { Link } from "react-router";
+import axios from "axios";
 
 const Signup = () => {
+  // const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { createUser } = useAuth();
+  const { createUser, updateUserProfile } = useAuth();
   const handleSignUp = (data) => {
+    console.log("signup data", data.photo[0]);
+    const profileUrl = data.photo[0];
     createUser(data.email, data.password)
       .then((result) => {
         console.log(result.user);
+        // upload image to imgbb
+        const formData = new FormData();
+        formData.append("image", profileUrl);
+        // upload image to imgbb
+        const images_Host_Key = `https://api.imgbb.com/1/upload?expiration=600&key=${
+          import.meta.env.VITE_images_host_key
+        }`;
+        axios.post(images_Host_Key, formData).then((response) => {
+          console.log("Image upload response:", response.data.data.url);
+          const userProfile = {
+            displayName: data.name,
+            photoURL: response.data.data.url,
+          };
+          updateUserProfile(userProfile)
+            .then(() => {
+              console.log("User profile updated successfully");
+            })
+            .catch((error) => {
+              console.log("Error updating user profile:", error);
+            });
+        });
+        // navigate("/auth/login");
+        toast("User created successfully");
       })
       .catch((error) => {
         if (error.message === "Firebase: Error (auth/email-already-in-use).") {
@@ -32,12 +60,21 @@ const Signup = () => {
         <form onSubmit={handleSubmit(handleSignUp)}>
           <h1 className="text-3xl font-bold text-center">SingUp</h1>
           <fieldset className="fieldset">
+            {/* Name field */}
             <label className="label">Name</label>
             <input
               type="name"
               className="input w-full"
               placeholder="name"
               {...register("name", { required: true })}
+            />
+            {/* Photo field */}
+            <label className="label">Photo</label>
+            <input
+              type="file"
+              className="file-input w-full"
+              placeholder="photo"
+              {...register("photo", { required: true })}
             />
 
             {/* email field */}
