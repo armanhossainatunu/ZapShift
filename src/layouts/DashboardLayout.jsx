@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet } from "react-router";
+import { Link, NavLink, Outlet } from "react-router";
 
 const DashboardLayout = () => {
   return (
@@ -67,9 +67,20 @@ const DashboardLayout = () => {
                 </svg>
                 <span className="is-drawer-close:hidden">Homepage</span>
               </Link>
-      </li>
-          
-            
+            </li>
+            <li>
+              <Link
+                to="/dashboard/my-parcels"
+                className="is-drawer-close:tooltip is-drawer-close:tooltip-right"
+                data-tip="My Parcels"
+              >
+                {/* Home icon */}
+             <p>🚚</p>
+                <span className="is-drawer-close:hidden">My Parcels</span>
+              </Link>
+            </li>
+
+
             {/* List item */}
             <li>
               <button

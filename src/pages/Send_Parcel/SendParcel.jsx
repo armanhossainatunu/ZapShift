@@ -3,8 +3,10 @@ import { useForm, useWatch } from "react-hook-form";
 import { useLoaderData } from "react-router";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import useAuth from "../../Hooks/useAuth";
 
 const SendParcel = () => {
+  const { user}=useAuth()
   const data = useLoaderData();
   const {
     register,
@@ -135,6 +137,7 @@ const SendParcel = () => {
             <input
               type="text"
               name="senderEmail"
+              defaultValue={user.email}
               placeholder="Sender Email"
               {...register("senderEmail", { required: true })}
               className="input input-bordered w-full mb-3"
